@@ -2038,4 +2038,5 @@
 
     <!-- Whether to start in touch mode -->
     <bool name="config_defaultInTouchMode">true</bool>
+
 </resources>
