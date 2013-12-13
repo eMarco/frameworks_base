@@ -25,4 +25,7 @@
     <!-- bool value to for enabling motion accelerometer -->
     <bool name="use_motion_accel">false</bool>
 
+    <!-- Configuration to sending and receiving Mms when mobile data is disable.-->
+    <bool name="config_enable_mms_with_mobile_data_off">false</bool>
+
 </resources>
