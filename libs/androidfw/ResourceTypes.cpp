@@ -1144,63 +1144,21 @@ ssize_t ResXMLParser::indexOfAttribute(const char16_t* ns, size_t nsLen,
             return NAME_NOT_FOUND;
         }
         const size_t N = getAttributeCount();
-        if (mTree.mStrings.isUTF8()) {
-            String8 ns8, attr8;
-            if (ns != NULL) {
-                ns8 = String8(ns, nsLen);
-            }
-            attr8 = String8(attr, attrLen);
-            STRING_POOL_NOISY(ALOGI("indexOfAttribute UTF8 %s (%d) / %s (%d)", ns8.string(), nsLen,
-                    attr8.string(), attrLen));
-            for (size_t i=0; i<N; i++) {
-                size_t curNsLen = 0, curAttrLen = 0;
-                const char* curNs = getAttributeNamespace8(i, &curNsLen);
-                const char* curAttr = getAttributeName8(i, &curAttrLen);
-                STRING_POOL_NOISY(ALOGI("  curNs=%s (%d), curAttr=%s (%d)", curNs, curNsLen,
-                        curAttr, curAttrLen));
-                if (curAttr != NULL && curNsLen == nsLen && curAttrLen == attrLen
-                        && memcmp(attr8.string(), curAttr, attrLen) == 0) {
-                    if (ns == NULL) {
-                        if (curNs == NULL) {
-                            STRING_POOL_NOISY(ALOGI("  FOUND!"));
-                            return i;
-                        }
-                    } else if (curNs != NULL) {
-                        //printf(" --> ns=%s, curNs=%s\n",
-                        //       String8(ns).string(), String8(curNs).string());
-                        if (memcmp(ns8.string(), curNs, nsLen) == 0) {
-                            STRING_POOL_NOISY(ALOGI("  FOUND!"));
-                            return i;
-                        }
-                    }
-                }
-            }
-        } else {
-            STRING_POOL_NOISY(ALOGI("indexOfAttribute UTF16 %s (%d) / %s (%d)",
-                    String8(ns, nsLen).string(), nsLen,
-                    String8(attr, attrLen).string(), attrLen));
-            for (size_t i=0; i<N; i++) {
-                size_t curNsLen = 0, curAttrLen = 0;
-                const char16_t* curNs = (const char16_t*)getAttributeNamespace(i, &curNsLen);
-                const char16_t* curAttr = (const char16_t*)getAttributeName(i, &curAttrLen);
-                STRING_POOL_NOISY(ALOGI("  curNs=%s (%d), curAttr=%s (%d)",
-                        String8(curNs, curNsLen).string(), curNsLen,
-                        String8(curAttr, curAttrLen).string(), curAttrLen));
-                if (curAttr != NULL && curNsLen == nsLen && curAttrLen == attrLen
-                        && (memcmp(attr, curAttr, attrLen*sizeof(char16_t)) == 0)) {
-                    if (ns == NULL) {
-                        if (curNs == NULL) {
-                            STRING_POOL_NOISY(ALOGI("  FOUND!"));
-                            return i;
-                        }
-                    } else if (curNs != NULL) {
-                        //printf(" --> ns=%s, curNs=%s\n",
-                        //       String8(ns).string(), String8(curNs).string());
-                        if (memcmp(ns, curNs, nsLen*sizeof(char16_t)) == 0) {
-                            STRING_POOL_NOISY(ALOGI("  FOUND!"));
-                            return i;
-                        }
-                    }
+        for (size_t i=0; i<N; i++) {
+            size_t curNsLen, curAttrLen;
+            const char16_t* curNs = (const char16_t*)getAttributeNamespace(i, &curNsLen);
+            const char16_t* curAttr = (const char16_t*)getAttributeName(i, &curAttrLen);
+            //printf("%d: ns=%p attr=%p curNs=%p curAttr=%p\n",
+            //       i, ns, attr, curNs, curAttr);
+            //printf(" --> attr=%s, curAttr=%s\n",
+            //       String8(attr).string(), String8(curAttr).string());
+            if (attr && curAttr && (strzcmp16(attr, attrLen, curAttr, curAttrLen) == 0)) {
+                if (ns == NULL) {
+                    if (curNs == NULL) return i;
+                } else if (curNs != NULL) {
+                    //printf(" --> ns=%s, curNs=%s\n",
+                    //       String8(ns).string(), String8(curNs).string());
+                    if (strzcmp16(ns, nsLen, curNs, curNsLen) == 0) return i;
                 }
             }
         }
@@ -4236,7 +4194,7 @@ bool ResTable::stringToFloat(const char16_t* s, size_t len, Res_value* outValue)
     if (*end == 0) {
         if (outValue) {
             outValue->dataType = outValue->TYPE_FLOAT;
-            *(float*)(&outValue->data) = f;
+            memcpy(&outValue->data, &f, sizeof(float));
             return true;
         }
     }
@@ -5188,7 +5146,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
             idx = mPackageGroups.size()+1;
 
             char16_t tmpName[sizeof(pkg->name)/sizeof(char16_t)];
-            strcpy16_dtoh(tmpName, pkg->name, sizeof(pkg->name)/sizeof(char16_t));
+            strcpy16_dtoh((uint16_t*)tmpName, (const uint16_t*)pkg->name, sizeof(pkg->name)/sizeof(char16_t));
             group = new PackageGroup(this, String16(tmpName), id);
             if (group == NULL) {
                 delete package;
@@ -5603,7 +5561,9 @@ void ResTable::print_value(const Package* pkg, const Res_value& value) const
             }
         } 
     } else if (value.dataType == Res_value::TYPE_FLOAT) {
-        printf("(float) %g\n", *(const float*)&value.data);
+        float f;
+        memcpy(&f, &value.data, sizeof(float));
+        printf("(float) %g\n", f);
     } else if (value.dataType == Res_value::TYPE_DIMENSION) {
         printf("(dimension) ");
         print_complex(value.data, false);
