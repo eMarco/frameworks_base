@@ -38,8 +38,9 @@
   <java-symbol type="drawable" name="stat_notify_privacy_guard_custom_plus" />
   <java-symbol type="drawable" name="stat_notify_privacy_guard_custom_plus_light" />
 
-
   <!-- Configuration to set delete any partial segments expire age -->
   <java-symbol type="string" name="config_partial_segment_expire_age" />
+
+  <java-symbol type="bool" name="config_lte_capable" />
 
 </resources>
