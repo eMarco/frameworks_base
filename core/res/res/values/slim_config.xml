@@ -19,4 +19,7 @@
          1xRTT voice call, irrespective of IMS registration state  -->
     <bool name="config_send_sms1x_on_voice_call">true</bool>
 
+    <!-- set this value to true to set network mode as global during boot up -->
+    <bool name="config_global_phone_enabled">false</bool>
+
 </resources>
