@@ -87,7 +87,7 @@ inline static T max(T a, T b) {
 // range checked; guaranteed to NUL-terminate within the stated number of available slots
 // NOTE: if this truncates the dst string due to running out of space, no attempt is
 // made to avoid splitting surrogate pairs.
-static void strcpy16_dtoh(char16_t* dst, const uint16_t* src, size_t avail)
+static void strcpy16_dtoh(char16_t* dst, const char16_t* src, size_t avail)
 {
     char16_t* last = dst + avail - 1;
     while (*src && (dst < last)) {
