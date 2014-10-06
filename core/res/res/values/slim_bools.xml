@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <!-- Whether to make default hotspot security NONE-->
+    <bool name="set_wifi_hotspot_security_none">false</bool>
+
+</resources>

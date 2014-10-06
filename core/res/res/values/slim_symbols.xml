@@ -46,5 +46,8 @@
   <java-symbol type="bool" name="config_lte_capable" />
   <java-symbol type="bool" name="config_send_sms1x_on_voice_call" />
   <java-symbol type="bool" name="config_enable_mms_with_mobile_data_off" />
+  <java-symbol type="string" name="def_wifi_wifihotspot_ssid" />
+  <java-symbol type="string" name="def_wifi_wifihotspot_pass" />
+  <java-symbol type="string" name="def_wifi_direct_name" />
 
 </resources>
