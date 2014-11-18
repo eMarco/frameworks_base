@@ -585,6 +585,7 @@ final class DisplayPowerController implements AutomaticBrightnessController.Call
         if (state == Display.STATE_OFF) {
             brightness = PowerManager.BRIGHTNESS_OFF;
             mLights.getLight(LightsManager.LIGHT_ID_BUTTONS).setBrightness(brightness);
+            mLights.getLight(LightsManager.LIGHT_ID_KEYBOARD).setBrightness(brightness);
         }
 
         // Configure auto-brightness.
