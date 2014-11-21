@@ -4852,6 +4852,12 @@ public final class Settings {
         public static final String PRIVACY_GUARD_NOTIFICATION = "privacy_guard_notification";
 
         /**
+         * Whether to include options in power menu for rebooting into recovery and bootloader
+         * @hide
+         */
+        public static final String ADVANCED_REBOOT = "advanced_reboot";
+
+        /**
          * Names of the packages that the current user has explicitly allowed to
          * see all of the user's notifications, separated by ':'.
          *
@@ -4998,7 +5004,8 @@ public final class Settings {
             UI_NIGHT_MODE,
             SLEEP_TIMEOUT,
             PRIVACY_GUARD_DEFAULT,
-            PRIVACY_GUARD_NOTIFICATION
+            PRIVACY_GUARD_NOTIFICATION,
+            ADVANCED_REBOOT
         };
 
         /**
