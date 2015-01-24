@@ -577,10 +577,10 @@ static jint android_media_AudioRecord_check_permission(JNIEnv *env,  jobject thi
     jstring packageName) {
 
     // Convert client name jstring to String16
-    const char16_t *rawClientName = env->GetStringChars(packageName, NULL);
+    const char16_t *rawClientName = reinterpret_cast<const char16_t*>(env->GetStringChars(packageName, NULL));
     jsize rawClientNameLen = env->GetStringLength(packageName);
     String16 clientName(rawClientName, rawClientNameLen);
-    env->ReleaseStringChars(packageName, rawClientName);
+    env->ReleaseStringChars(packageName, reinterpret_cast<const jchar*>(rawClientName));
 
     AppOpsManager appOpsManager;
 
