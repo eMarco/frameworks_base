@@ -5782,6 +5782,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     } else if (mContext.getPackageManager().hasSystemFeature(
                             PackageManager.FEATURE_TELEVISION)) {
                         theme = com.android.internal.R.style.Theme_Leanback_Dialog_Alert;
+                    } else if (SystemProperties.get("ro.product.board").equals("tuna")) {
+                        theme = com.android.internal.R.style.Theme_Holo_Dialog_Alert;
                     } else {
                         theme = 0;
                     }
