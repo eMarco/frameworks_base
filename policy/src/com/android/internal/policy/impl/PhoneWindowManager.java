@@ -5482,6 +5482,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         this.currentPackageName = pkgName;
     }
 
+    private boolean avoid_burn_in;
     /** {@inheritDoc} */
     @Override
     public void showBootMessage(final CharSequence msg, final boolean always) {
@@ -5538,7 +5539,16 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     mBootMsgDialog.show();
                 }
 
-                if (always && (currentPackageName != null)) {
+                if (always && (currentPackageName != null)) {                    
+                    if (avoid_burn_in) {
+                    	    mBootMsgDialog.setMessage("Please wait...\n\n" + msg + "\n" + currentPackageName);
+                    	    avoid_burn_in = false;
+                    }
+                    else {
+                    	    mBootMsgDialog.setMessage(msg + "\n" + currentPackageName);
+                    	    avoid_burn_in = true;
+                    }
+                    
                     // Only display the current package name if the main message says "Optimizing app N of M".
                     // We don't want to do this when the message says "Starting apps" or "Finishing boot", etc.
                     mBootMsgDialog.setMessage(msg + "\n" + currentPackageName);
