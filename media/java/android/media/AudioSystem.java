@@ -57,7 +57,7 @@ public class AudioSystem
     /* @hide The audio stream for text to speech (TTS) */
     public static final int STREAM_TTS = 9;
     /* @hide The audio stream for incall music delivery */
-    public static final int STREAM_INCALL_MUSIC = 10;
+    public static final int STREAM_INCALL_MUSIC = 14;
     /**
      * @deprecated Use {@link #numStreamTypes() instead}
      */
