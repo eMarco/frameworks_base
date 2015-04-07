@@ -21,7 +21,7 @@
 
 #define NOISY(x) //x
 
-#if 1 //__cplusplus >= 201103L
+#if __cplusplus >= 201103L
 void strcpy16_htod(char16_t* dst, const char16_t* src)
 {
     while (*src) {
@@ -31,7 +31,7 @@ void strcpy16_htod(char16_t* dst, const char16_t* src)
     }
     *dst = 0;
 }
-#else
+#endif
 void strcpy16_htod(uint16_t* dst, const char16_t* src)
 {
     while (*src) {
@@ -41,7 +41,6 @@ void strcpy16_htod(uint16_t* dst, const char16_t* src)
     }
     *dst = 0;
 }
-#endif
 
 void printStringPool(const ResStringPool* pool)
 {
@@ -471,7 +470,7 @@ status_t StringPool::writeStringBlock(const sp<AaptFile>& pool)
 
             ENCODE_LENGTH(strings, sizeof(char16_t), strSize)
 
-            strcpy16_htod(strings, ent.value);
+            strcpy16_htod( reinterpret_cast<uint16_t*>(strings), ent.value);
         }
 
         strPos += totalSize;
