@@ -48,16 +48,10 @@ struct fields_t {
     jfieldID    canDisableShutterSound;
     jfieldID    face_rect;
     jfieldID    face_score;
-    jfieldID    face_id;
-    jfieldID    face_left_eye;
-    jfieldID    face_right_eye;
-    jfieldID    face_mouth;
     jfieldID    rect_left;
     jfieldID    rect_top;
     jfieldID    rect_right;
     jfieldID    rect_bottom;
-    jfieldID    point_x;
-    jfieldID    point_y;
     jmethodID   post_event;
     jmethodID   rect_constructor;
     jmethodID   face_constructor;
@@ -113,7 +107,7 @@ private:
     sp<Camera>  mCamera;                // strong reference to native object
     jclass      mFaceClass;  // strong reference to Face class
     jclass      mRectClass;  // strong reference to Rect class
-    jclass      mPointClass;  // strong reference to Point class
+    jclass      mPointClass; // strong reference to Point class
     bool        mIsExtendedFace;
     Mutex       mLock;
 
@@ -186,7 +180,6 @@ JNICameraContext::JNICameraContext(JNIEnv* env, jobject weak_this, jclass clazz,
 
     jclass pointClazz = env->FindClass("android/graphics/Point");
     mPointClass = (jclass) env->NewGlobalRef(pointClazz);
-
     mManualBufferMode = false;
     mManualCameraCallbackSet = false;
 }
@@ -435,33 +428,6 @@ void JNICameraContext::postMetadata(JNIEnv *env, int32_t msgType, camera_frame_m
             env->SetIntField(face, fields.face_top_bottom_gaze, metadata->faces[i].top_bottom_gaze);
         }
 #endif
-
-        bool optionalFields = metadata->faces[i].id != 0
-            && metadata->faces[i].left_eye[0] != -2000 && metadata->faces[i].left_eye[1] != -2000
-            && metadata->faces[i].right_eye[0] != -2000 && metadata->faces[i].right_eye[1] != -2000
-            && metadata->faces[i].mouth[0] != -2000 && metadata->faces[i].mouth[1] != -2000;
-        if (optionalFields) {
-            int32_t id = metadata->faces[i].id;
-            env->SetIntField(face, fields.face_id, id);
-
-            jobject leftEye = env->NewObject(mPointClass, fields.point_constructor);
-            env->SetIntField(leftEye, fields.point_x, metadata->faces[i].left_eye[0]);
-            env->SetIntField(leftEye, fields.point_y, metadata->faces[i].left_eye[1]);
-            env->SetObjectField(face, fields.face_left_eye, leftEye);
-            env->DeleteLocalRef(leftEye);
-
-            jobject rightEye = env->NewObject(mPointClass, fields.point_constructor);
-            env->SetIntField(rightEye, fields.point_x, metadata->faces[i].right_eye[0]);
-            env->SetIntField(rightEye, fields.point_y, metadata->faces[i].right_eye[1]);
-            env->SetObjectField(face, fields.face_right_eye, rightEye);
-            env->DeleteLocalRef(rightEye);
-
-            jobject mouth = env->NewObject(mPointClass, fields.point_constructor);
-            env->SetIntField(mouth, fields.point_x, metadata->faces[i].mouth[0]);
-            env->SetIntField(mouth, fields.point_y, metadata->faces[i].mouth[1]);
-            env->SetObjectField(face, fields.face_mouth, mouth);
-            env->DeleteLocalRef(mouth);
-        }
 
         env->DeleteLocalRef(face);
         env->DeleteLocalRef(rect);
@@ -1228,17 +1194,13 @@ int register_android_hardware_Camera(JNIEnv *env)
         { "android/hardware/Camera$CameraInfo", "canDisableShutterSound",   "Z",
           &fields.canDisableShutterSound },
         { "android/hardware/Camera$Face", "rect", "Landroid/graphics/Rect;", &fields.face_rect },
-        { "android/hardware/Camera$Face", "leftEye", "Landroid/graphics/Point;", &fields.face_left_eye},
-        { "android/hardware/Camera$Face", "rightEye", "Landroid/graphics/Point;", &fields.face_right_eye},
-        { "android/hardware/Camera$Face", "mouth", "Landroid/graphics/Point;", &fields.face_mouth},
         { "android/hardware/Camera$Face", "score", "I", &fields.face_score },
-        { "android/hardware/Camera$Face", "id", "I", &fields.face_id},
         { "android/graphics/Rect", "left", "I", &fields.rect_left },
         { "android/graphics/Rect", "top", "I", &fields.rect_top },
         { "android/graphics/Rect", "right", "I", &fields.rect_right },
         { "android/graphics/Rect", "bottom", "I", &fields.rect_bottom },
-        { "android/graphics/Point", "x", "I", &fields.point_x},
-        { "android/graphics/Point", "y", "I", &fields.point_y},
+        { "android/graphics/Point", "x", "I", &fields.point_x },
+        { "android/graphics/Point", "y", "I", &fields.point_y },
     };
 
     field facefields_to_find[] = {
