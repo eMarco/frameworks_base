@@ -21,7 +21,7 @@
 
 #define NOISY(x) //x
 
-#if __cplusplus >= 201103L
+#if 1 //__cplusplus >= 201103L
 void strcpy16_htod(char16_t* dst, const char16_t* src)
 {
     while (*src) {
@@ -31,8 +31,7 @@ void strcpy16_htod(char16_t* dst, const char16_t* src)
     }
     *dst = 0;
 }
-#endif
-
+#else
 void strcpy16_htod(uint16_t* dst, const char16_t* src)
 {
     while (*src) {
@@ -42,6 +41,7 @@ void strcpy16_htod(uint16_t* dst, const char16_t* src)
     }
     *dst = 0;
 }
+#endif
 
 void printStringPool(const ResStringPool* pool)
 {

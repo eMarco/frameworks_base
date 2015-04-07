@@ -5691,7 +5691,7 @@ status_t ResTable::parsePackage(const ResTable_package* const pkg,
         idx = mPackageGroups.size() + 1;
 
         char16_t tmpName[sizeof(pkg->name)/sizeof(pkg->name[0])];
-        strcpy16_dtoh(tmpName, pkg->name, sizeof(pkg->name)/sizeof(pkg->name[0]));
+        strcpy16_dtoh(tmpName, reinterpret_cast<const char16_t*>(pkg->name), sizeof(pkg->name)/sizeof(pkg->name[0]));
         group = new PackageGroup(this, String16(tmpName), id);
         if (group == NULL) {
             delete package;
@@ -5924,7 +5924,7 @@ status_t DynamicRefTable::load(const ResTable_lib_header* const header)
     for (uint32_t entryIndex = 0; entryIndex < entryCount; entryIndex++) {
         uint32_t packageId = dtohl(entry->packageId);
         char16_t tmpName[sizeof(entry->packageName) / sizeof(char16_t)];
-        strcpy16_dtoh(tmpName, entry->packageName, sizeof(entry->packageName) / sizeof(char16_t));
+        strcpy16_dtoh(tmpName, reinterpret_cast<const char16_t*>(entry->packageName), sizeof(entry->packageName) / sizeof(char16_t));
         LIB_NOISY(ALOGV("Found lib entry %s with id %d\n", String8(tmpName).string(),
                 dtohl(entry->packageId)));
         if (packageId >= 256) {
@@ -6063,7 +6063,7 @@ status_t ResTable::createIdmap(const ResTable& overlay,
     // overlay packages are assumed to contain only one package group
     const ResTable_package* overlayPackageStruct = overlay.mPackageGroups[0]->packages[0]->package;
     char16_t tmpName[sizeof(overlayPackageStruct->name)/sizeof(overlayPackageStruct->name[0])];
-    strcpy16_dtoh(tmpName, overlayPackageStruct->name, sizeof(overlayPackageStruct->name)/sizeof(overlayPackageStruct->name[0]));
+    strcpy16_dtoh(tmpName, reinterpret_cast<const char16_t*>(overlayPackageStruct->name), sizeof(overlayPackageStruct->name)/sizeof(overlayPackageStruct->name[0]));
     const String16 overlayPackage(tmpName);
 
     for (size_t typeIndex = 0; typeIndex < pg->types.size(); ++typeIndex) {
@@ -6376,7 +6376,7 @@ void ResTable::print(bool inclValues) const
             // if this package is a shared library.
             packageId = pkg->package->id;
             char16_t tmpName[sizeof(pkg->package->name)/sizeof(pkg->package->name[0])];
-            strcpy16_dtoh(tmpName, pkg->package->name, sizeof(pkg->package->name)/sizeof(pkg->package->name[0]));
+            strcpy16_dtoh(tmpName, reinterpret_cast<const char16_t*>(pkg->package->name), sizeof(pkg->package->name)/sizeof(pkg->package->name[0]));
             printf("  Package %d id=0x%02x name=%s\n", (int)pkgIndex,
                     pkg->package->id, String8(tmpName).string());
         }
